@@ -3,19 +3,19 @@ from disnake import Embed
 from . import rules
 
 
-def create_rule_embed(index: int, text: str) -> Embed:
+def create_rule_embed(rule: rules.Rule) -> Embed:
     """Create an embed for a rule for the get rule command.
 
     Args:
-        text: The rule's text.
+        rule: The rule.
 
     Returns:
         The embed.
     """
 
     return Embed(
-        title=f"Rule {index}",
-        description=text,
+        title=f"Rule {rule.index}",
+        description=rule.text,
     )
 
 

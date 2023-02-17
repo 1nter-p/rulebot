@@ -35,9 +35,7 @@ class Rules(commands.Cog):
             await inter.response.send_message("❌ Rule not found.", ephemeral=True)
             return
 
-        await inter.response.send_message(
-            embed=create_rule_embed(rule.index, rule.text), ephemeral=True
-        )
+        await inter.response.send_message(embed=create_rule_embed(rule), ephemeral=True)
 
     @rule.sub_command(name="add")
     async def add_rule(
@@ -51,7 +49,7 @@ class Rules(commands.Cog):
 
         await inter.response.send_message(
             f"✅ Rule {rule.index} added.",
-            embed=create_rule_embed(rule.index, rule.text),
+            embed=create_rule_embed(rule),
             ephemeral=True,
         )
 
