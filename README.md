@@ -26,3 +26,8 @@ If you want to contribute to this project, you can do so by forking the reposito
 creating a pull request.
 
 Make sure to use the pre-commit hook to lint and format your code before committing.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for
+details.
