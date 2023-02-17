@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS rules (guild_id TEXT, idx INTEGER, text TEXT);
