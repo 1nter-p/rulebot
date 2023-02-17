@@ -25,6 +25,24 @@ async def get(db: aiosqlite.Connection, guild_id: int, index: int) -> str:
     return rule[0]
 
 
+async def get_all(db: aiosqlite.Connection, guild_id: int) -> list[str]:
+    """Get all rules.
+
+    Args:
+        db: The database connection.
+        guild_id: The guild's ID.
+
+    Returns:
+        The rules.
+    """
+
+    async with db.execute(
+        "SELECT text FROM rules WHERE guild_id = ? ORDER BY idx",
+        (guild_id,),
+    ) as cursor:
+        return [rule[0] async for rule in cursor]
+
+
 async def add(db: aiosqlite.Connection, guild_id: int, text: str) -> int:
     """Add a rule.
 

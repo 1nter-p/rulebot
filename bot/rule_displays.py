@@ -1,6 +1,8 @@
 import disnake
 import aiosqlite
 
+from bot.embeds import create_rules_embed
+
 from .rulebot import Rulebot
 
 
@@ -56,3 +58,24 @@ async def remove_rule_display_channel(db: aiosqlite.Connection, guild_id: int) -
 
     await db.execute("DELETE FROM rule_displays WHERE guild_id = ?", (guild_id,))
     await db.commit()
+
+
+async def sync_rule_display_channel(bot: Rulebot, guild_id: int) -> None:
+    """Sync the rule display channel for a guild.
+
+    Args:
+        bot: The bot.
+        guild_id: The guild's ID.
+
+    Raises:
+        TypeError: If the rule display channel does not exist.
+    """
+
+    channel = await get_rule_display_channel(bot, guild_id)
+    if channel is None:
+        raise TypeError("Rule display channel does not exist.")
+
+    await channel.purge()
+
+    embed = await create_rules_embed(bot.db, guild_id)
+    await channel.send(embed=embed)

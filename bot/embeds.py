@@ -44,11 +44,7 @@ async def create_rules_embed(db: aiosqlite.Connection, guild_id: int) -> Embed:
 
     embed = Embed(title="Rules", description="")
 
-    async with db.execute(
-        "SELECT idx, text FROM rules WHERE guild_id = ? ORDER BY idx",
-        (guild_id,),
-    ) as cursor:
-        for index, text in await cursor.fetchall():
-            embed.description += f"#{index}: {text}\n"
+    for index, text in enumerate(await rules.get_all(db, guild_id)):
+        embed.description += f"#{index}: {text}\n"
 
     return embed

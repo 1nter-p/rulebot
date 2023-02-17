@@ -1,9 +1,12 @@
+import contextlib
+
 import disnake
 from disnake.ext import commands
 
 from .. import rules
 from ..rulebot import Rulebot
 from ..embeds import create_rule_embed
+from ..rule_displays import sync_rule_display_channel
 
 
 class Rules(commands.Cog):
@@ -35,6 +38,9 @@ class Rules(commands.Cog):
 
         index = await rules.add(self.bot.db, inter.guild_id, text)
 
+        with contextlib.suppress(TypeError):
+            await sync_rule_display_channel(self.bot, inter.guild_id)
+
         await inter.response.send_message(f"✅ Rule {index} added.", ephemeral=True)
 
     @commands.slash_command(name="remove-rule")
@@ -44,6 +50,9 @@ class Rules(commands.Cog):
         """Remove a rule."""
 
         await rules.remove(self.bot.db, inter.guild_id, index)
+
+        with contextlib.suppress(TypeError):
+            await sync_rule_display_channel(self.bot, inter.guild_id)
 
         await inter.response.send_message(f"✅ Rule {index} removed.", ephemeral=True)
 
