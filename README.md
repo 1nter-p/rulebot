@@ -19,3 +19,10 @@ To set up a rule display, use the `/rule-display set <channel>` command.<br>
 To remove a rule display, use the `/rule-display remove` command.
 
 Rules will automatically synchronize with the rule display channel.
+
+## Contributing
+
+If you want to contribute to this project, you can do so by forking the repository and
+creating a pull request.
+
+Make sure to use the pre-commit hook to lint and format your code before committing.
