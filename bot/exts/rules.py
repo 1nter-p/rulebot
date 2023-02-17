@@ -6,7 +6,7 @@ from disnake.ext import commands
 from .. import rules
 from ..rulebot import Rulebot
 from ..embeds import create_rule_embed
-from ..rule_displays import sync_rule_display_channel
+from ..rule_displays import sync_rule_display
 
 
 class Rules(commands.Cog):
@@ -26,14 +26,16 @@ class Rules(commands.Cog):
     ) -> None:
         """Get a rule by its index."""
 
-        try:
-            embed = await create_rule_embed(self.bot.db, inter.guild_id, index)
-        except TypeError:
+        rule = await rules.get(self.bot.db, inter.guild_id, index)
+        if rule is None:
             await inter.response.send_message(
-                "❌ That rule does not exist.", ephemeral=True
+                f"❌ Rule {index} not found.", ephemeral=True
             )
-        else:
-            await inter.response.send_message(embed=embed)
+            return
+
+        await self.silently_sync_rule_display(inter.guild_id)
+
+        await inter.response.send_message(embed=create_rule_embed(rule), ephemeral=True)
 
     @rule.sub_command(name="add")
     async def add_rule(
@@ -41,12 +43,15 @@ class Rules(commands.Cog):
     ) -> None:
         """Add a rule."""
 
-        index = await rules.add(self.bot.db, inter.guild_id, text)
+        rule = await rules.add(self.bot.db, inter.guild_id, text)
 
-        with contextlib.suppress(TypeError):
-            await sync_rule_display_channel(self.bot, inter.guild_id)
+        await self.silently_sync_rule_display(inter.guild_id)
 
-        await inter.response.send_message(f"✅ Rule {index} added.", ephemeral=True)
+        await inter.response.send_message(
+            f"✅ Rule {rule.index} added.",
+            embed=create_rule_embed(rule.index, rule.text),
+            ephemeral=True,
+        )
 
     @rule.sub_command(name="remove")
     async def remove_rule(
@@ -56,10 +61,15 @@ class Rules(commands.Cog):
 
         await rules.remove(self.bot.db, inter.guild_id, index)
 
-        with contextlib.suppress(TypeError):
-            await sync_rule_display_channel(self.bot, inter.guild_id)
+        await self.silently_sync_rule_display(inter.guild_id)
 
         await inter.response.send_message(f"✅ Rule {index} removed.", ephemeral=True)
+
+    async def silently_sync_rule_display(self, guild_id: int) -> None:
+        """Silently sync the rule display channel for a guild."""
+
+        with contextlib.suppress(TypeError):
+            await sync_rule_display(self.bot, guild_id)
 
 
 def setup(bot: Rulebot) -> None:

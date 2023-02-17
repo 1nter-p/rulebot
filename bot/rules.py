@@ -1,7 +1,17 @@
+from dataclasses import dataclass
+
 import aiosqlite
 
 
-async def get(db: aiosqlite.Connection, guild_id: int, index: int) -> str:
+@dataclass
+class Rule:
+    """Represents a rule."""
+
+    index: int
+    text: str
+
+
+async def get(db: aiosqlite.Connection, guild_id: int, index: int) -> Rule | None:
     """Get a rule's text.
 
     Args:
@@ -10,11 +20,11 @@ async def get(db: aiosqlite.Connection, guild_id: int, index: int) -> str:
         index: The rule's index.
 
     Returns:
-        The rule's text.
+        The rule.
     """
 
     async with db.execute(
-        "SELECT text FROM rules WHERE guild_id = ? AND idx = ?",
+        "SELECT idx, text FROM rules WHERE guild_id = ? AND idx = ?",
         (guild_id, index),
     ) as cursor:
         rule = await cursor.fetchone()
@@ -22,11 +32,11 @@ async def get(db: aiosqlite.Connection, guild_id: int, index: int) -> str:
     if rule is None:
         return None
 
-    return rule[0]
+    return Rule(rule[0], rule[1])
 
 
-async def get_all(db: aiosqlite.Connection, guild_id: int) -> list[str]:
-    """Get all rules.
+async def get_all(db: aiosqlite.Connection, guild_id: int) -> list[Rule]:
+    """Get all rules for a guild.
 
     Args:
         db: The database connection.
@@ -37,22 +47,21 @@ async def get_all(db: aiosqlite.Connection, guild_id: int) -> list[str]:
     """
 
     async with db.execute(
-        "SELECT text FROM rules WHERE guild_id = ? ORDER BY idx",
+        "SELECT idx, text FROM rules WHERE guild_id = ? ORDER BY idx",
         (guild_id,),
     ) as cursor:
-        return [rule[0] async for rule in cursor]
+        return [Rule(rule[0], rule[1]) async for rule in cursor]
 
 
-async def add(db: aiosqlite.Connection, guild_id: int, text: str) -> int:
-    """Add a rule.
+async def get_next_index(db: aiosqlite.Connection, guild_id: int) -> int:
+    """Get the next rule index for a guild.
 
     Args:
         db: The database connection.
         guild_id: The guild's ID.
-        text: The rule's text.
 
     Returns:
-        The rule's index.
+        The next rule index.
     """
 
     async with db.execute(
@@ -61,7 +70,22 @@ async def add(db: aiosqlite.Connection, guild_id: int, text: str) -> int:
     ) as cursor:
         index = (await cursor.fetchone())[0] or 0
 
-    index += 1
+    return index + 1
+
+
+async def add(db: aiosqlite.Connection, guild_id: int, text: str) -> Rule:
+    """Add a rule.
+
+    Args:
+        db: The database connection.
+        guild_id: The guild's ID.
+        text: The rule's text.
+
+    Returns:
+        The new rule.
+    """
+
+    index = await get_next_index(db, guild_id)
 
     await db.execute(
         "INSERT INTO rules (guild_id, idx, text) VALUES (?, ?, ?)",
@@ -69,7 +93,7 @@ async def add(db: aiosqlite.Connection, guild_id: int, text: str) -> int:
     )
     await db.commit()
 
-    return index
+    return Rule(index, text)
 
 
 async def remove(db: aiosqlite.Connection, guild_id: int, index: int) -> None:

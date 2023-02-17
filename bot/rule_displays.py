@@ -3,6 +3,7 @@ import aiosqlite
 
 from bot.embeds import create_rules_embed
 
+from . import rules
 from .rulebot import Rulebot
 
 
@@ -60,8 +61,8 @@ async def remove_rule_display_channel(db: aiosqlite.Connection, guild_id: int) -
     await db.commit()
 
 
-async def sync_rule_display_channel(bot: Rulebot, guild_id: int) -> None:
-    """Sync the rule display channel for a guild.
+async def sync_rule_display(bot: Rulebot, guild_id: int) -> None:
+    """Sync the rule display for a guild.
 
     Args:
         bot: The bot.
@@ -77,5 +78,5 @@ async def sync_rule_display_channel(bot: Rulebot, guild_id: int) -> None:
 
     await channel.purge()
 
-    embed = await create_rules_embed(bot.db, guild_id)
+    embed = create_rules_embed(await rules.get_all(bot.db, guild_id))
     await channel.send(embed=embed)
