@@ -21,7 +21,7 @@ class Rules(commands.Cog):
         try:
             embed = await create_rule_embed(self.bot.db, inter.guild_id, index)
         except TypeError as e:
-            await inter.response.send_message(str(e))
+            await inter.response.send_message(str(e), ephemeral=True)
         else:
             await inter.response.send_message(embed=embed)
 
@@ -33,7 +33,7 @@ class Rules(commands.Cog):
 
         index = await rules.add(self.bot.db, inter.guild_id, text)
 
-        await inter.response.send_message(f"Rule {index} added.")
+        await inter.response.send_message(f"✅ Rule {index} added.", ephemeral=True)
 
     @commands.slash_command(name="remove-rule")
     async def remove_rule(
@@ -43,7 +43,7 @@ class Rules(commands.Cog):
 
         await rules.remove(self.bot.db, inter.guild_id, index)
 
-        await inter.response.send_message(f"Rule {index} removed.")
+        await inter.response.send_message(f"✅ Rule {index} removed.", ephemeral=True)
 
 
 def setup(bot: Rulebot) -> None:
