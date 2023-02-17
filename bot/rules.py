@@ -25,9 +25,6 @@ async def get(db: aiosqlite.Connection, guild_id: int, index: int) -> str:
     if rule is None:
         raise TypeError(f"Rule {index} does not exist.")
 
-    if not isinstance(rule[0], str):
-        raise TypeError(f"The rule's text wasn't a string.")
-
     return rule[0]
 
 
@@ -47,11 +44,7 @@ async def add(db: aiosqlite.Connection, guild_id: int, text: str) -> int:
         "SELECT MAX(idx) FROM rules WHERE guild_id = ?",
         (guild_id,),
     ) as cursor:
-        fetch_result = await cursor.fetchone()
-        if fetch_result is None:
-            raise TypeError("Unable to fetch the maximum index.")
-
-        index = fetch_result[0] or 0
+        index = await cursor.fetchone()[0] or 0
 
     index += 1
 

@@ -1,6 +1,8 @@
 import aiosqlite
 from disnake import Embed
 
+from . import rules
+
 
 async def create_rule_embed(
     db: aiosqlite.Connection, guild_id: int, index: int
@@ -14,21 +16,12 @@ async def create_rule_embed(
 
     Returns:
         The embed.
+
+    Raises:
+        TypeError: If the rule does not exist.
     """
-
-    async with db.execute(
-        "SELECT text FROM rules WHERE guild_id = ? AND idx = ?",
-        (guild_id, index),
-    ) as cursor:
-        rule = await cursor.fetchone()
-
-    if rule is None:
-        raise TypeError(f"Rule {index} does not exist.")
-
-    rule_text = rule[0]
 
     return Embed(
         title=f"Rule {index}",
-        description=rule_text,
-        color=0x00FF00,
+        description=rules.get(db, guild_id, index),
     )
