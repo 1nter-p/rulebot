@@ -44,7 +44,7 @@ async def add(db: aiosqlite.Connection, guild_id: int, text: str) -> int:
         "SELECT MAX(idx) FROM rules WHERE guild_id = ?",
         (guild_id,),
     ) as cursor:
-        index = await cursor.fetchone()[0] or 0
+        index = (await cursor.fetchone())[0] or 0
 
     index += 1
 

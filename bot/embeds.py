@@ -23,5 +23,5 @@ async def create_rule_embed(
 
     return Embed(
         title=f"Rule {index}",
-        description=rules.get(db, guild_id, index),
+        description=await rules.get(db, guild_id, index),
     )
