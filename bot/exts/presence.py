@@ -21,5 +21,5 @@ class Presence(commands.Cog):
 
 
 def setup(bot: Rulebot) -> None:
-    """Load the :cls:`Presence` cog."""
+    """Load the Presence cog."""
     bot.add_cog(Presence(bot))

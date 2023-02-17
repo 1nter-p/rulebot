@@ -64,4 +64,5 @@ class RuleDisplays(commands.Cog):
 
 
 def setup(bot: Rulebot) -> None:
+    """Load the RuleDisplays cog."""
     bot.add_cog(RuleDisplays(bot))
