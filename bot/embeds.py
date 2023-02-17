@@ -44,7 +44,7 @@ async def create_rules_embed(db: aiosqlite.Connection, guild_id: int) -> Embed:
 
     embed = Embed(title="Rules", description="")
 
-    for index, text in enumerate(await rules.get_all(db, guild_id)):
+    for index, text in enumerate(await rules.get_all(db, guild_id), start=1):
         embed.description += f"#{index}: {text}\n"
 
     return embed
