@@ -30,7 +30,7 @@ class Rulebot(commands.InteractionBot):
 
         for ext in os.listdir("bot/exts"):
             if ext.endswith(".py"):
-                self.load_extension(f"bot.exts.{ext.strip('.py')}")
+                self.load_extension(f"bot.exts.{ext.removesuffix('.py')}")
 
     async def connect_to_db(self) -> None:
         """Connect to the database. Ideally, this should only be called once."""
