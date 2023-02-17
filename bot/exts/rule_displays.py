@@ -5,6 +5,7 @@ from ..rulebot import Rulebot
 from ..rule_displays import (
     set_rule_display_channel,
     remove_rule_display_channel,
+    sync_rule_display_channel,
 )
 
 
@@ -43,6 +44,7 @@ class RuleDisplays(commands.Cog):
         """Set the rule display channel for a guild."""
 
         await set_rule_display_channel(self.bot.db, inter.guild_id, channel)
+        await sync_rule_display_channel(self.bot, inter.guild_id)
 
         await inter.response.send_message(
             f"✅ Rule display channel set to {channel.mention}.", ephemeral=True
