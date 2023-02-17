@@ -35,8 +35,6 @@ class Rules(commands.Cog):
             await inter.response.send_message("❌ Rule not found.", ephemeral=True)
             return
 
-        await self.silently_sync_rule_display(inter.guild_id)
-
         await inter.response.send_message(
             embed=create_rule_embed(rule.index, rule.text), ephemeral=True
         )
