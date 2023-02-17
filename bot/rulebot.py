@@ -5,8 +5,11 @@ from disnake.ext import commands
 
 
 class Rulebot(commands.InteractionBot):
-    """:cls:`disnake.ext.commands.InteractionBot` subclass that provides all Rulebot functionality.
-    After instantiating the bot, make sure to call :meth:`connect_to_db` before starting.
+    """:cls:`disnake.ext.commands.InteractionBot` subclass that provides all Rulebot
+    functionality.
+
+    After instantiating, make sure to call :meth:`connect_to_db` before starting
+    otherwise the bot will not work.
 
     Attributes:
         db: The database connection.
