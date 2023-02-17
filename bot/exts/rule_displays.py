@@ -14,7 +14,12 @@ class RuleDisplays(commands.Cog):
     def __init__(self, bot: Rulebot) -> None:
         self.bot = bot
 
-    @commands.slash_command(name="get-rule-display")
+    @commands.slash_command(name="rule-display")
+    async def rule_display(self, inter: disnake.ApplicationCommandInteraction) -> None:
+        """Base command for rule display commands."""
+        pass
+
+    @rule_display.sub_command(name="get")
     async def get_rule_display(
         self, inter: disnake.ApplicationCommandInteraction
     ) -> None:
@@ -31,7 +36,7 @@ class RuleDisplays(commands.Cog):
                 f"✅ Rule display channel is {channel.mention}.", ephemeral=True
             )
 
-    @commands.slash_command(name="set-rule-display")
+    @rule_display.sub_command(name="set")
     async def set_rule_display(
         self, inter: disnake.ApplicationCommandInteraction, channel: disnake.TextChannel
     ) -> None:
@@ -43,7 +48,7 @@ class RuleDisplays(commands.Cog):
             f"✅ Rule display channel set to {channel.mention}.", ephemeral=True
         )
 
-    @commands.slash_command(name="remove-rule-display")
+    @rule_display.sub_command(name="remove")
     async def remove_rule_display(
         self, inter: disnake.ApplicationCommandInteraction
     ) -> None:

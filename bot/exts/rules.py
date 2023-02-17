@@ -16,7 +16,12 @@ class Rules(commands.Cog):
         self.bot = bot
 
     @commands.slash_command()
-    async def rule(
+    async def rule(self, inter: disnake.ApplicationCommandInteraction) -> None:
+        """Base command for rule commands."""
+        pass
+
+    @rule.sub_command(name="get")
+    async def get_rule(
         self, inter: disnake.ApplicationCommandInteraction, index: int
     ) -> None:
         """Get a rule by its index."""
@@ -30,7 +35,7 @@ class Rules(commands.Cog):
         else:
             await inter.response.send_message(embed=embed)
 
-    @commands.slash_command(name="add-rule")
+    @rule.sub_command(name="add")
     async def add_rule(
         self, inter: disnake.ApplicationCommandInteraction, text: str
     ) -> None:
@@ -43,7 +48,7 @@ class Rules(commands.Cog):
 
         await inter.response.send_message(f"✅ Rule {index} added.", ephemeral=True)
 
-    @commands.slash_command(name="remove-rule")
+    @rule.sub_command(name="remove")
     async def remove_rule(
         self, inter: disnake.ApplicationCommandInteraction, index: int
     ) -> None:
