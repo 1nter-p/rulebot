@@ -76,4 +76,16 @@ async def remove(db: aiosqlite.Connection, guild_id: int, index: int) -> None:
         "DELETE FROM rules WHERE guild_id = ? AND idx = ?",
         (guild_id, index),
     )
+
+    # Change the other rules after the removed rule to have the correct index
+    async with db.execute(
+        "SELECT idx FROM rules WHERE guild_id = ? AND idx > ?",
+        (guild_id, index),
+    ) as cursor:
+        async for row in cursor:
+            await db.execute(
+                "UPDATE rules SET idx = ? WHERE guild_id = ? AND idx = ?",
+                (row[0] - 1, guild_id, row[0]),
+            )
+
     await db.commit()
