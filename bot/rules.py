@@ -11,9 +11,6 @@ async def get(db: aiosqlite.Connection, guild_id: int, index: int) -> str:
 
     Returns:
         The rule's text.
-
-    Raises:
-        TypeError: If the rule with the given index does not exist.
     """
 
     async with db.execute(
@@ -23,7 +20,7 @@ async def get(db: aiosqlite.Connection, guild_id: int, index: int) -> str:
         rule = await cursor.fetchone()
 
     if rule is None:
-        raise TypeError(f"Rule {index} does not exist.")
+        return None
 
     return rule[0]
 
@@ -66,11 +63,11 @@ async def remove(db: aiosqlite.Connection, guild_id: int, index: int) -> None:
         index: The rule's index.
 
     Raises:
-        TypeError: If the rule with the given index does not exist.
+        TypeError: If the rule does not exist.
     """
 
-    # Ensure the rule exists since the get function raises an error if it doesn't
-    await get(db, guild_id, index)
+    if await get(db, guild_id, index) is None:
+        raise TypeError("Rule does not exist.")
 
     await db.execute(
         "DELETE FROM rules WHERE guild_id = ? AND idx = ?",

@@ -46,10 +46,11 @@ class RuleDisplays(commands.Cog):
     ) -> None:
         """Update the rule display channel for a guild."""
 
-        try:
-            channel = await get_rule_display_channel(self.bot, inter.guild_id)
-        except TypeError as e:
-            await inter.response.send_message(str(e), ephemeral=True)
+        channel = await get_rule_display_channel(self.bot, inter.guild_id)
+        if channel is None:
+            await inter.response.send_message(
+                "❌ No rule display channel set.", ephemeral=True
+            )
             return
 
         await channel.send(embed=await create_rules_embed(self.bot.db, inter.guild_id))

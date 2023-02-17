@@ -20,8 +20,10 @@ class Rules(commands.Cog):
 
         try:
             embed = await create_rule_embed(self.bot.db, inter.guild_id, index)
-        except TypeError as e:
-            await inter.response.send_message(str(e), ephemeral=True)
+        except TypeError:
+            await inter.response.send_message(
+                "❌ That rule does not exist.", ephemeral=True
+            )
         else:
             await inter.response.send_message(embed=embed)
 

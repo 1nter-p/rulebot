@@ -12,9 +12,6 @@ async def get_rule_display_channel(bot: Rulebot, guild_id: int) -> disnake.TextC
 
     Returns:
         The rule display channel.
-
-    Raises:
-        TypeError: If the rule display channel does not exist.
     """
 
     async with bot.db.execute(
@@ -22,8 +19,9 @@ async def get_rule_display_channel(bot: Rulebot, guild_id: int) -> disnake.TextC
         (guild_id,),
     ) as cursor:
         fetch_result = await cursor.fetchone()
-        if fetch_result is None:
-            raise TypeError("Rule display channel does not exist.")
+
+    if fetch_result is None:
+        return None
 
     channel_id = fetch_result[0]
 

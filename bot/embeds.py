@@ -21,9 +21,13 @@ async def create_rule_embed(
         TypeError: If the rule does not exist.
     """
 
+    rule_text = await rules.get(db, guild_id, index)
+    if rule_text is None:
+        raise TypeError("Rule does not exist.")
+
     return Embed(
         title=f"Rule {index}",
-        description=await rules.get(db, guild_id, index),
+        description=rule_text,
     )
 
 
