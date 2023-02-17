@@ -53,6 +53,28 @@ async def get_all(db: aiosqlite.Connection, guild_id: int) -> list[Rule]:
         return [Rule(rule[0], rule[1]) async for rule in cursor]
 
 
+async def search(db: aiosqlite.Connection, guild_id: int, text: str) -> Rule:
+    """Fuzzy search for a rule.
+
+    Args:
+        db: The database connection.
+        guild_id: The guild's ID.
+        text: The text to search for.
+
+    Returns:
+        The rule that matches.
+    """
+
+    text = text.lower()
+
+    rules = await get_all(db, guild_id)
+
+    try:
+        return [rule for rule in rules if text in rule.text.lower()][0]
+    except IndexError:
+        return None
+
+
 async def get_next_index(db: aiosqlite.Connection, guild_id: int) -> int:
     """Get the next rule index for a guild.
 

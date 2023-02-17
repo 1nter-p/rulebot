@@ -22,20 +22,24 @@ class Rules(commands.Cog):
 
     @rule.sub_command(name="get")
     async def get_rule(
-        self, inter: disnake.ApplicationCommandInteraction, index: int
+        self, inter: disnake.ApplicationCommandInteraction, text_or_index: str
     ) -> None:
-        """Get a rule by its index."""
+        """Get a rule by its index or fuzzy searching the text."""
 
-        rule = await rules.get(self.bot.db, inter.guild_id, index)
+        if text_or_index.isdigit():
+            rule = await rules.get(self.bot.db, inter.guild_id, int(text_or_index))
+        else:
+            rule = await rules.search(self.bot.db, inter.guild_id, text_or_index)
+
         if rule is None:
-            await inter.response.send_message(
-                f"❌ Rule {index} not found.", ephemeral=True
-            )
+            await inter.response.send_message("❌ Rule not found.", ephemeral=True)
             return
 
         await self.silently_sync_rule_display(inter.guild_id)
 
-        await inter.response.send_message(embed=create_rule_embed(rule), ephemeral=True)
+        await inter.response.send_message(
+            embed=create_rule_embed(rule.index, rule.text), ephemeral=True
+        )
 
     @rule.sub_command(name="add")
     async def add_rule(
