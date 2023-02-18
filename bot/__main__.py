@@ -5,6 +5,8 @@ import dotenv
 
 from .rulebot import Rulebot
 
+bot = Rulebot()
+
 
 async def main() -> None:
     if not os.path.exists(".env"):
@@ -21,4 +23,7 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        bot.loop.run_until_complete(bot.close())
