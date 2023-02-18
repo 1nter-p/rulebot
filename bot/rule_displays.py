@@ -28,7 +28,11 @@ async def get_rule_display_channel(bot: Rulebot, guild_id: int) -> disnake.TextC
 
     channel_id = fetch_result[0]
 
-    return await bot.fetch_channel(channel_id)
+    try:
+        return await bot.fetch_channel(channel_id)
+    except disnake.NotFound:
+        await remove_rule_display_channel(bot.db, guild_id)
+        return None
 
 
 async def set_rule_display_channel(
