@@ -50,9 +50,9 @@ class Rulebot(commands.InteractionBot):
         """Connect to the database. Ideally, this should only be called once."""
 
         self.db = await aiosqlite.connect(os.environ["DB_PATH"])
-        await self._run_init_sql()
+        await self.run_init_sql()
 
-    async def _run_init_sql(self) -> None:
+    async def run_init_sql(self) -> None:
         """Run the init.sql file through the database."""
 
         with open("init.sql") as file:
