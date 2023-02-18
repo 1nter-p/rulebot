@@ -1,3 +1,5 @@
+"""Abstractions for rules in the database."""
+
 from dataclasses import dataclass
 
 import aiosqlite

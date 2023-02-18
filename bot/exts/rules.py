@@ -1,3 +1,5 @@
+"""Extension for rule management commands."""
+
 import contextlib
 
 import disnake
@@ -13,6 +15,11 @@ class Rules(commands.Cog):
     """Cog to provide rule commands."""
 
     def __init__(self, bot: Rulebot) -> None:
+        """Initialize the cog.
+
+        Args:
+            bot: The :cls:`Rulebot` instance.
+        """
         self.bot = bot
 
     @commands.slash_command()

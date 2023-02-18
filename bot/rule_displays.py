@@ -1,3 +1,5 @@
+"""Abstraction for interacting with rule displays."""
+
 import disnake
 import aiosqlite
 

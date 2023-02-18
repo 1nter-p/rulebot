@@ -1,3 +1,5 @@
+"""Extension to provide rule display management commands."""
+
 import disnake
 from disnake.ext import commands
 
@@ -11,9 +13,14 @@ from ..rule_displays import (
 
 
 class RuleDisplays(commands.Cog):
-    """Cog to provide rule displays"""
+    """Cog to provide rule displays."""
 
     def __init__(self, bot: Rulebot) -> None:
+        """Initialize the cog.
+
+        Args:
+            bot: The :cls:`Rulebot` instance.
+        """
         self.bot = bot
 
     @commands.slash_command(name="rule-display")

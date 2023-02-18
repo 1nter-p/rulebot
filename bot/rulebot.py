@@ -1,3 +1,5 @@
+"""Contains the Rulebot class, which is the main bot class."""
+
 import os
 import aiosqlite
 import disnake
@@ -5,27 +7,39 @@ from disnake.ext import commands
 
 
 class Rulebot(commands.InteractionBot):
-    """:cls:`disnake.ext.commands.InteractionBot` subclass that provides all Rulebot
-    functionality.
-
-    After instantiating, make sure to call :meth:`connect_to_db` before starting
-    otherwise the bot will not work.
+    """:cls:`disnake.ext.commands.InteractionBot` subclass with Rulebot functionality.
 
     Attributes:
         db: The database connection.
     """
 
     def __init__(self) -> None:
+        """Initialize the bot."""
+
         super().__init__(intents=disnake.Intents.default())
 
         self.db: aiosqlite.Connection
 
-        self._load_all_extensions()
+        self.load_all_extensions()
 
     async def on_ready(self) -> None:
+        """Called when the bot (re)connects to the gateway."""
         print("Ready!")
 
-    def _load_all_extensions(self) -> None:
+    async def start(self, token: str) -> None:
+        """Start the bot.
+
+        This is overriden by Rulebot to connect to the database in an async context.
+
+        Args:
+            token: The bot token.
+        """
+
+        await self.connect_to_db()
+
+        await super().start(token, reconnect=True)
+
+    def load_all_extensions(self) -> None:
         """Load all extensions in the exts directory."""
 
         for ext in os.listdir("bot/exts"):

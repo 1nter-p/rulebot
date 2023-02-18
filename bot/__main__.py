@@ -1,3 +1,8 @@
+"""Main entry point for the bot.
+
+You should not run this file directly. Instead, run it via `python -m bot`.
+"""
+
 import os
 import asyncio
 
@@ -9,6 +14,8 @@ bot = Rulebot()
 
 
 async def main() -> None:
+    """Asynchronous entry point for the bot."""
+
     if not os.path.exists(".env"):
         raise FileNotFoundError(
             "No .env file found. Please create one following the template in"
@@ -18,7 +25,6 @@ async def main() -> None:
     dotenv.load_dotenv()
 
     bot = Rulebot()
-    await bot.connect_to_db()
     await bot.start(os.environ["TOKEN"])
 
 

@@ -1,3 +1,5 @@
+"""Various helper functions to create embeds from data."""
+
 from disnake import Embed
 
 from . import rules
